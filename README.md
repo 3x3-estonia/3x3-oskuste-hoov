@@ -22,6 +22,7 @@ Iseseisev 3x3 korvpalli kursus Eesti naistele ja tüdrukutele, eelkõige 5v5 mä
 | Fail | Mis see on |
 |---|---|
 | `index.html` | Kogu leht: sisu, kujundus ja loogika (Claude Artifact, ilma `<html>`/`<head>`/`<body>` sildita). |
+| `versioonid/v1-eesti-keeles.html` | Esimene versioon (14.11.2026): ainult eesti keeles, ilma videote linnukeste ja planeerijata. Alles võrdluseks; kehtiv leht on `index.html`. |
 
 ## Kuidas sisu muuta
 
