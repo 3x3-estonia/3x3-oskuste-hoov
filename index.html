@@ -1,0 +1,658 @@
+<title>3x3 oskuste hoov</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: asphalt-court hero, sticky section bar with language switch, one reading column: course (10 skill modules with video ticks), planner (day/week/month/year tabs), my plans, self-tests, rules, best practices */
+:root {
+  --bg: #F6F5F9;
+  --surface: #FFFFFF;
+  --fg: #1C1727;
+  --muted: #5D566C;
+  --line: #E1DCE9;
+  --court: #2B2537;
+  --court-fg: #F3EFFA;
+  --yellow: #F5C518;
+  --purple: #6B3FA0;
+  --on-purple: #FFFFFF;
+  --pink-soft: #F7E7EF;
+  --ok: #2F7D4F;
+  --ok-soft: #E3F2E8;
+  --track: #E9E4F0;
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14111B; --surface: #1E1929; --fg: #EDE9F4; --muted: #ABA3BB; --line: #322A42;
+    --court: #0E0C13; --court-fg: #EDE9F4; --yellow: #F5C518; --purple: #B79AE6; --on-purple: #14111B;
+    --pink-soft: #2B1F33; --ok: #6CC795; --ok-soft: #1C2E24; --track: #2C2540; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14111B; --surface: #1E1929; --fg: #EDE9F4; --muted: #ABA3BB; --line: #322A42;
+  --court: #0E0C13; --court-fg: #EDE9F4; --yellow: #F5C518; --purple: #B79AE6; --on-purple: #14111B;
+  --pink-soft: #2B1F33; --ok: #6CC795; --ok-soft: #1C2E24; --track: #2C2540; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 900px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { margin: 0; line-height: 1.12; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.9rem, 4.6vw, 2.6rem); text-transform: uppercase; letter-spacing: .01em; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--purple); text-underline-offset: 2px; }
+button { font: inherit; }
+:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+
+/* hero */
+.hero { background: var(--court); color: var(--court-fg); position: relative; overflow: hidden; }
+.hero svg.lines { position: absolute; right: -60px; top: -40px; width: 460px; max-width: 70%; opacity: .5; pointer-events: none; color: var(--yellow); }
+.hero .wrap { position: relative; padding-block: 44px 40px; display: grid; gap: 16px; }
+.eyebrow { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--yellow); }
+.hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(3rem, 11vw, 5.6rem); text-transform: uppercase; line-height: .92; }
+.hero h1 em { font-style: normal; color: var(--yellow); }
+.hero .lede { max-width: 60ch; font-size: 1.06rem; opacity: .92; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.facts span { border: 1px solid rgba(245,197,24,.55); border-radius: 999px; padding: 4px 12px; font-size: .85rem; }
+
+/* sticky bar */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+nav.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+nav.bar .wrap { display: flex; gap: 8px; align-items: center; padding-block: 8px; }
+.navlinks { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+.navlinks button { flex: none; background: none; border: 0; color: var(--fg); font-weight: 600; font-size: .9rem; padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+.navlinks button:hover { background: var(--pink-soft); }
+.lang { flex: none; display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.lang button { border: 0; background: none; color: var(--fg); font-weight: 700; font-size: .8rem; padding: 6px 10px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--purple); color: var(--on-purple); }
+
+section { padding-block: 44px 6px; }
+section > .wrap { display: grid; gap: 18px; }
+.lead { color: var(--muted); max-width: 66ch; }
+
+/* cards & grids */
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card b.k { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; line-height: 1; color: var(--purple); }
+.card p { font-size: .94rem; }
+
+/* progress */
+.progress { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+.pr-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.bar-track { grid-column: 1 / -1; height: 10px; background: var(--track); border-radius: 999px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--purple); border-radius: 999px; }
+.bar-fill.ok { background: var(--ok); }
+.sync { font-size: .82rem; color: var(--muted); }
+
+/* skills */
+.skills { display: grid; gap: 10px; }
+details.skill { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+details.skill.done { border-color: var(--ok); }
+details.skill > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3rem minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 14px 16px; }
+details.skill > summary::-webkit-details-marker { display: none; }
+.sn { font-family: var(--font-display); font-size: 1.9rem; line-height: 1; color: var(--purple); }
+details.skill.done .sn { color: var(--ok); }
+.st { display: grid; gap: 2px; min-width: 0; }
+.st small { color: var(--muted); font-size: .85rem; }
+.pill { font-size: .78rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--track); color: var(--muted); white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.chev { width: 22px; height: 22px; transition: transform .2s; color: var(--muted); }
+details[open] .chev { transform: rotate(180deg); }
+.skill-body { padding: 0 16px 18px calc(16px + 3rem + 12px); display: grid; gap: 14px; }
+.skill-body ul { margin: 0; padding-left: 1.15em; display: grid; gap: 5px; }
+.why { background: var(--pink-soft); border-radius: 8px; padding: 10px 12px; font-size: .95rem; }
+.drill { border-left: 3px solid var(--yellow); padding-left: 12px; display: grid; gap: 2px; }
+.drill b { font-size: .95rem; }
+.drill span { color: var(--muted); font-size: .9rem; }
+.vids { display: grid; gap: 8px; }
+.vid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--pink-soft); border-radius: 8px; padding: 10px 12px; }
+.vid.seen { background: var(--ok-soft); }
+.vid a { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; text-decoration: none; color: var(--fg); min-width: 0; }
+.vid a svg { width: 20px; height: 20px; color: var(--purple); margin-top: 2px; }
+.vid small { display: block; color: var(--muted); }
+.tick { display: flex; gap: 6px; align-items: center; font-size: .85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.tick input { width: 18px; height: 18px; accent-color: var(--ok); }
+.master { justify-self: start; border: 1px solid var(--ok); color: var(--ok); background: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; cursor: pointer; }
+.master[aria-pressed="true"] { background: var(--ok); color: var(--surface); }
+@media (max-width: 560px) { .skill-body { padding-left: 16px; } details.skill > summary { grid-template-columns: 2.4rem minmax(0, 1fr) auto; } details.skill > summary .chev { display: none; } }
+
+/* tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { font-weight: 600; font-size: .9rem; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--purple); border-color: var(--purple); color: var(--on-purple); }
+
+/* planner */
+.planner { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 16px; }
+.form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+.form label, .form fieldset { display: grid; gap: 4px; font-size: .84rem; color: var(--muted); font-weight: 600; min-width: 0; }
+.form fieldset { border: 0; padding: 0; margin: 0; grid-column: 1 / -1; }
+.form legend { padding: 0; margin-bottom: 4px; }
+.form .wide { grid-column: 1 / -1; }
+.form input[type=text], .form input[type=date], .form select, .test input[type=number] { font: inherit; font-weight: 400; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; }
+.days { display: flex; flex-wrap: wrap; gap: 6px; }
+.days label { display: flex; gap: 6px; align-items: center; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; color: var(--fg); font-weight: 600; cursor: pointer; }
+.days input { accent-color: var(--purple); }
+.btn { border: 0; border-radius: 6px; padding: 9px 16px; font-weight: 700; cursor: pointer; background: var(--purple); color: var(--on-purple); }
+.btn.ghost { background: none; color: var(--purple); border: 1px solid var(--purple); }
+.preview { border-top: 1px dashed var(--line); padding-top: 14px; display: grid; gap: 10px; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.items li { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 10px; align-items: start; border-top: 1px dashed var(--line); padding-top: 6px; }
+.items li:first-child { border-top: 0; padding-top: 0; }
+.items .tag { font-weight: 700; color: var(--purple); font-size: .88rem; }
+.items .sub { display: block; color: var(--muted); font-size: .88rem; }
+.saved-msg { color: var(--ok); font-weight: 600; font-size: .9rem; }
+
+/* my plans */
+.plans { display: grid; gap: 12px; }
+.plan { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+.plan header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: baseline; }
+.plan .goal { background: var(--pink-soft); border-radius: 8px; padding: 8px 12px; font-weight: 600; }
+.plan .items li { grid-template-columns: auto 4.6rem minmax(0, 1fr); cursor: pointer; }
+.plan .items input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--ok); }
+.plan .items li.done .body { text-decoration: line-through; color: var(--muted); }
+.plan footer { display: flex; justify-content: flex-end; gap: 8px; }
+.del { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 6px; padding: 5px 10px; font-size: .85rem; cursor: pointer; }
+.del.confirm { border-color: #B3261E; color: #B3261E; }
+.empty { color: var(--muted); font-style: italic; }
+
+/* tests */
+.test { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; align-content: start; }
+.test p { color: var(--muted); font-size: .92rem; }
+.test form { display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
+.test label { display: grid; gap: 4px; font-size: .82rem; color: var(--muted); }
+.test input[type=number] { width: 6.5rem; }
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .88rem; }
+.log li { display: flex; justify-content: space-between; border-top: 1px dashed var(--line); padding-top: 4px; }
+.log .best { color: var(--ok); font-weight: 700; }
+
+footer.site { padding-block: 40px 48px; color: var(--muted); font-size: .84rem; }
+footer.site .wrap { display: grid; gap: 10px; }
+footer.site ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+footer.site a { word-break: break-word; }
+@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+</style>
+
+<header class="hero">
+  <svg class="lines" viewBox="0 0 400 300" fill="none" stroke="currentColor" aria-hidden="true">
+    <path d="M60 0 v120 a140 140 0 0 0 280 0 v-120" stroke-width="3"/>
+    <rect x="140" y="0" width="120" height="110" stroke-width="3"/>
+    <circle cx="200" cy="110" r="45" stroke-width="3"/>
+    <circle cx="200" cy="22" r="10" stroke-width="3"/>
+  </svg>
+  <div class="wrap">
+    <div class="eyebrow" data-t="eyebrow"></div>
+    <h1 id="h1"></h1>
+    <p class="lede" data-t="lede"></p>
+    <div class="facts" id="facts"></div>
+  </div>
+</header>
+
+<nav class="bar">
+  <div class="wrap">
+    <div class="navlinks" id="navlinks"></div>
+    <div class="lang" role="group" aria-label="Keel / Язык">
+      <button type="button" data-lang="et" aria-pressed="true">ET</button>
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<section id="alusta"><div class="wrap">
+  <h2 data-t="startH"></h2>
+  <div class="grid" id="start"></div>
+</div></section>
+
+<section id="kursus"><div class="wrap">
+  <h2 data-t="courseH"></h2>
+  <p class="lead" data-t="courseLead"></p>
+  <div class="progress" id="progress"></div>
+  <div class="skills" id="skills"></div>
+</div></section>
+
+<section id="planeerija"><div class="wrap">
+  <h2 data-t="plannerH"></h2>
+  <p class="lead" data-t="plannerLead"></p>
+  <div class="tabs" role="tablist" id="ptabs"></div>
+  <div class="planner" id="planner"></div>
+</div></section>
+
+<section id="plaanid"><div class="wrap">
+  <h2 data-t="myPlansH"></h2>
+  <p class="sync" id="sync"></p>
+  <div class="plans" id="plans"></div>
+</div></section>
+
+<section id="testid"><div class="wrap">
+  <h2 data-t="testsH"></h2>
+  <p class="lead" data-t="testsLead"></p>
+  <div class="grid" id="tests"></div>
+</div></section>
+
+<section id="reeglid"><div class="wrap">
+  <h2 data-t="rulesH"></h2>
+  <div class="grid" id="rules"></div>
+  <p class="lead" data-t="rulesNote"></p>
+</div></section>
+
+<section id="tavad"><div class="wrap">
+  <h2 data-t="practH"></h2>
+  <div class="grid" id="practices"></div>
+</div></section>
+</main>
+
+<footer class="site"><div class="wrap">
+  <strong data-t="sourcesH"></strong>
+  <ul>
+    <li><a href="https://fiba3x3.com/docs/fiba-3x3-basketball-rules-full-version.pdf" target="_blank" rel="noopener" data-t="src1"></a></li>
+    <li><a href="https://www.FIBA3x3.basketball/docs/wabc-3x3-players-guide.pdf" target="_blank" rel="noopener" data-t="src2"></a></li>
+    <li><a href="https://www.FIBA3x3.basketball/docs/physical-preparation-of-professional-3x3-athletes.pdf" target="_blank" rel="noopener" data-t="src3"></a></li>
+    <li><a href="https://bjsm.bmj.com/content/bjsports/50/20/1259.full.pdf" target="_blank" rel="noopener" data-t="src4"></a></li>
+    <li data-t="src5"></li>
+  </ul>
+  <p data-t="credits"></p>
+  <p>3x3 Estonia BC MTÜ · <a href="https://3x3estonia.com" target="_blank" rel="noopener">3x3estonia.com</a> · 3x3estonia@gmail.com</p>
+</div></footer>
+
+<script>
+(function () {
+"use strict";
+var L = 'et';
+function tr(x) { return Array.isArray(x) ? (L === 'ru' ? x[1] : x[0]) : x; }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+/* ---------- UI text ---------- */
+var T = {
+  eyebrow: ['3x3 Estonia BC · Eesti naistele ja tüdrukutele', '3x3 Estonia BC · для девушек и женщин Эстонии'],
+  h1: ['3x3<br>oskuste <em>hoov</em>', '3x3<br>двор <em>навыков</em>'],
+  lede: ['Iseseisev 3x3 kursus 5v5 mängijatele. Siin on kümme põhioskust koos harjutuste ja videotega. Märgi vaadatud videod ära, pane endale kokku päeva-, nädala-, kuu- või aastaplaan ja jälgi enesetestidega oma arengut. Hoov on mõeldud lisaks sinu enda klubi trennidele.',
+         'Самостоятельный курс 3x3 для игроков 5x5. Здесь десять основных навыков с упражнениями и видео. Отмечай просмотренные видео, составляй план на день, неделю, месяц или год и следи за прогрессом с помощью самотестов. Двор навыков дополняет тренировки в твоём клубе.'],
+  nav: [['Alusta', 'Kursus', 'Planeerija', 'Minu plaanid', 'Testid', 'Reeglid', 'Head tavad'], ['Начало', 'Курс', 'Планировщик', 'Мои планы', 'Тесты', 'Правила', 'Советы']],
+  factSkills: ['oskust', 'навыков'], factVids: ['videot', 'видео'], factPlans: ['plaanitüüpi', 'вида планов'], factTests: ['enesetesti', 'самотеста'],
+  startH: ['Kuidas alustada', 'Как начать'],
+  start: [
+    [['Tee enesetestid', 'Сделай самотесты'], ['Pane kirja oma tänane tase. Kolme kuu pärast näed, kui palju oled arenenud.', 'Запиши свой сегодняшний уровень. Через три месяца увидишь, насколько выросла.']],
+    [['Vali oskus', 'Выбери навык'], ['Ava oskuse moodul, vaata videod ja märgi need vaadatuks.', 'Открой модуль навыка, посмотри видео и отметь их как просмотренные.']],
+    [['Tee plaan', 'Составь план'], ['Planeerija koostab sulle päeva-, nädala-, kuu- või aastaplaani. Salvesta see ja märgi tehtud osad ära.', 'Планировщик составит план на день, неделю, месяц или год. Сохрани его и отмечай выполненное.']],
+    [['Mängi', 'Играй'], ['Oskused kinnistuvad mängus. Mängi sõpradega 3x3 ning tule klubi suvelaagrisse ja turniiridele.', 'Навыки закрепляются в игре. Играй 3x3 с друзьями, приезжай в летний лагерь клуба и на турниры.']]
+  ],
+  courseH: ['Kursus: 10 põhioskust', 'Курс: 10 основных навыков'],
+  courseLead: ['3x3 oskused on korvpalli oskused, aga igal mängijal on rohkem palli, rohkem 1 vs 1 olukordi ja vähem puhkust. Videod on inglise keeles ja avanevad YouTube\'is. Kui oled video läbi vaadanud, märgi see vaadatuks.',
+               'Навыки 3x3 — это навыки баскетбола, но у каждого игрока больше мяча, больше ситуаций 1 на 1 и меньше отдыха. Видео на английском и открываются на YouTube. Посмотрела видео — отметь его.'],
+  progVids: ['Vaadatud videod', 'Просмотрено видео'], progSkills: ['Omandatud oskused', 'Освоено навыков'],
+  whyH: ['Miks see on tähtis', 'Почему это важно'], keysH: ['Võtmepunktid', 'Главное'], drillsH: ['Harjutused', 'Упражнения'], vidsH: ['Videod', 'Видео'],
+  seen: ['Vaadatud', 'Просмотрено'], markMaster: ['Märgi oskus omandatuks', 'Отметить навык как освоенный'], mastered: ['Oskus omandatud ✓', 'Навык освоен ✓'],
+  ofVids: ['videot', 'видео'],
+  plannerH: ['Planeerija', 'Планировщик'],
+  plannerLead: ['Vali, mida tahad õppida või saavutada, ja planeerija paneb kokku plaani. Iga trenn algab vigastusi ennetava soojendusega. Salvesta plaan ja märgi tehtud osad ära jaotises „Minu plaanid".',
+                'Выбери, чему хочешь научиться или чего добиться, и планировщик составит план. Каждая тренировка начинается с разминки для профилактики травм. Сохрани план и отмечай выполненное в разделе «Мои планы».'],
+  ptabs: [['Päev', 'Nädal', 'Kuu', 'Aasta'], ['День', 'Неделя', 'Месяц', 'Год']],
+  fDate: ['Kuupäev', 'Дата'], fStart: ['Algus', 'Начало'], fDur: ['Trenni pikkus', 'Длительность тренировки'], fSkill: ['Põhioskus', 'Основной навык'],
+  fSkill2: ['Teine oskus (valikuline)', 'Второй навык (по желанию)'], fNone: ['—', '—'], fSessions: ['Trenne nädalas', 'Тренировок в неделю'],
+  fClub: ['Klubi trennipäevad (nendele päevadele hoovi trenni ei panda, kui saab vältida)', 'Дни тренировок в клубе (на эти дни занятия не ставятся, если можно избежать)'],
+  fGoal: ['Eesmärk (valikuline)', 'Цель (по желанию)'], fGoalPh: ['nt „Tabada 12/20 kaare tagant"', 'напр. «Попадать 12/20 из-за дуги»'],
+  fStartMonth: ['Alguskuu', 'Начальный месяц'],
+  make: ['Koosta plaan', 'Составить план'], save: ['Salvesta minu plaanidesse', 'Сохранить в мои планы'], savedMsg: ['Salvestatud. Plaan on jaotises „Minu plaanid".', 'Сохранено. План в разделе «Мои планы».'],
+  min: ['min', 'мин'],
+  myPlansH: ['Minu plaanid', 'Мои планы'],
+  noPlans: ['Sul pole veel ühtegi plaani. Koosta esimene planeerijas.', 'У тебя пока нет планов. Составь первый в планировщике.'],
+  del: ['Kustuta', 'Удалить'], delConfirm: ['Kinnita kustutamine', 'Подтвердить удаление'],
+  pType: { day: ['Päevaplaan', 'План на день'], week: ['Nädalaplaan', 'План на неделю'], month: ['Kuuplaan', 'План на месяц'], year: ['Aastaplaan', 'План на год'] },
+  done: ['tehtud', 'выполнено'],
+  syncLocal: ['Sinu edenemine ja plaanid salvestuvad selles brauseris. Teises seadmes neid ei näe.', 'Твой прогресс и планы сохраняются в этом браузере. На другом устройстве их не будет.'],
+  syncCloud: ['Sinu edenemine ja plaanid salvestuvad sinu kontole ja on näha ainult sulle.', 'Твой прогресс и планы сохраняются в твоём аккаунте и видны только тебе.'],
+  testsH: ['Enesetestid', 'Самотесты'],
+  testsLead: ['Tee testid iga 4–6 nädala järel ühesugustes tingimustes. Tulemusi näed ainult sina.', 'Делай тесты каждые 4–6 недель в одинаковых условиях. Результаты видишь только ты.'],
+  result: ['Tulemus', 'Результат'], saveRes: ['Salvesta', 'Сохранить'], noRes: ['Tulemusi veel pole. Tee test ja salvesta esimene.', 'Результатов пока нет. Сделай тест и сохрани первый.'], best: ['parim', 'лучший'],
+  rulesH: ['3x3 reeglid lühidalt', 'Правила 3x3 коротко'],
+  rulesNote: ['Täpsed reeglid on FIBA 3x3 ametlikus reeglistikus. Vaata ka reeglite videot (oskus 1).', 'Точные правила — в официальном регламенте FIBA 3x3. Посмотри также видео о правилах (навык 1).'],
+  practH: ['Head tavad', 'Полезные советы'],
+  sourcesH: ['Allikad ja lisalugemine', 'Источники и что почитать'],
+  src1: ['FIBA 3x3 ametlikud reeglid', 'Официальные правила FIBA 3x3'],
+  src2: ['FIBA WABC 3x3 mängija juhend: 3x3 eripärad, mängu põhimõtted, intervalltreening', 'Руководство игрока 3x3 FIBA WABC: особенности 3x3, принципы игры, интервальная тренировка'],
+  src3: ['FIBA: 3x3 sportlaste füüsiline ettevalmistus', 'FIBA: физическая подготовка спортсменов 3x3'],
+  src4: ['BJSM: neuromuskulaarne treening ja põlvevigastuste ennetus naissportlastel', 'BJSM: нервно-мышечная тренировка и профилактика травм колена у спортсменок'],
+  src5: ['LaBella jt (2011): neuromuskulaarne soojendus tüdrukute korvpallis ja jalgpallis, Archives of Pediatrics & Adolescent Medicine', 'LaBella и др. (2011): нервно-мышечная разминка в женском баскетболе и футболе, Archives of Pediatrics & Adolescent Medicine'],
+  credits: ['Videod kuuluvad nende autoritele ja avanevad YouTube\'is. Hoovi koostas 3x3 Estonia BC MTÜ.', 'Видео принадлежат их авторам и открываются на YouTube. Двор навыков создан клубом 3x3 Estonia BC MTÜ.'],
+  days: [['E', 'T', 'K', 'N', 'R', 'L', 'P'], ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']],
+  months: [['jaanuar', 'veebruar', 'märts', 'aprill', 'mai', 'juuni', 'juuli', 'august', 'september', 'oktoober', 'november', 'detsember'], ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']],
+  week: ['Nädal', 'Неделя'],
+  warm: ['Soojendus ja vigastuste ennetus', 'Разминка и профилактика травм'],
+  shoot: ['Kahepunktiline vise: 5 kohta × 5 viset, pane tabamused kirja', 'Бросок из-за дуги: 5 точек × 5 бросков, записывай попадания'],
+  str: ['Jõuring: kükk, väljaaste, plank, ühe jala tõus', 'Силовой круг: приседания, выпады, планка, подъёмы на одной ноге'],
+  skillWord: ['Oskus', 'Навык'],
+  clubDay: ['klubi trennipäev: tee lühidalt', 'день тренировки в клубе: коротко'],
+  phases: [
+    ['Õpi', 'Учись', 'Vaata videod, tee harjutusi aeglaselt ja keskendu tehnikale.', 'Посмотри видео, делай упражнения медленно, сосредоточься на технике.'],
+    ['Korda', 'Повторяй', 'Tee harjutusi täismahus 2–3 korda nädalas.', 'Выполняй упражнения в полном объёме 2–3 раза в неделю.'],
+    ['Surve all', 'Под давлением', 'Mängukiirusel, väsinult ja võimalusel kaitsjaga.', 'В игровом темпе, уставшей и по возможности с защитником.'],
+    ['Testi ja mängi', 'Проверь и играй', 'Tee enesetest, mängi 1 vs 1 või 3x3 ja pane kirja, mis õnnestus.', 'Сделай самотест, сыграй 1 на 1 или 3x3 и запиши, что получилось.']
+  ],
+  yPhase: {
+    season: ['5v5 hooaeg: 2 × 30 min nädalas iseseisvalt', 'Сезон 5x5: 2 × 30 мин в неделю самостоятельно'],
+    may: ['Üleminek: 3 × 45 min nädalas, väljas ja 3x3 palliga', 'Переход: 3 × 45 мин в неделю, на улице и мячом 3x3'],
+    summer: ['3x3 hooaeg: suvelaagrid ja turniirid, vahepeal 3–4 trenni nädalas', 'Сезон 3x3: летние лагеря и турниры, между ними 3–4 тренировки в неделю'],
+    sept: ['Puhkus ja enesetestid, uue hooaja eesmärgid', 'Отдых и самотесты, цели на новый сезон']
+  },
+  tests: ['enesetestid', 'самотесты']
+};
+
+/* ---------- skills ---------- */
+var S = [
+  { t: ['3x3 reeglid ja mängu loogika', 'Правила 3x3 и логика игры'], s: ['Mõista, miks 3x3 on teistsugune mäng', 'Пойми, чем 3x3 отличается от обычного баскетбола'],
+    why: ['3x3-s on rünnakuaega 12 sekundit, pärast kaitse lauapalli tuleb pall viia kaare taha ja mäng ei peatu peaaegu kunagi. Kes reegleid hästi tunneb, teeb kiiremaid otsuseid.', 'В 3x3 на атаку 12 секунд, после подбора в защите мяч нужно вынести за дугу, а игра почти не останавливается. Кто хорошо знает правила, быстрее принимает решения.'],
+    keys: [['Kahepunktiline vise kaare tagant on 3x3 kõige väärtuslikum relv', 'Бросок из-за дуги (2 очка) — главное оружие в 3x3'], ['Pärast kaitse lauapalli: pall kaare taha (clear), alles siis viska', 'После подбора в защите: вынеси мяч за дугу (clear), только потом бросай'], ['Kaitsest rünnakule ilma pausita: treener ei saa mängu ajal juhendada', 'Из защиты в атаку без паузы: тренер не может подсказывать во время игры']],
+    drills: [[['Vaata ja seleta', 'Посмотри и объясни'], ['Vaata reeglite videot ja seleta sõbrale kolm asja, mis erinevad 5v5-st.', 'Посмотри видео о правилах и объясни подруге три отличия от 5x5.']], [['1 vs 1 3x3 reeglitega', '1 на 1 по правилам 3x3'], ['Mängi 1 vs 1 kuni 11 punktini: clear iga kaitse lauapalli järel, 12 sekundit rünnakuks.', 'Играй 1 на 1 до 11 очков: вынос мяча после каждого подбора в защите, 12 секунд на атаку.']]],
+    vids: [['mu_Ogwqyyic', 'The OFFICIAL 3x3 Basketball rules', 'FIBA3x3', '1:48'], ['bN6LywHcihI', 'The Official Rules of the Game', 'FIBA3x3', ''], ['RqBeT_IH0AQ', 'How to score in 3x3 Basketball – Tactical approach', 'Roger Franch', '5:44']] },
+  { t: ['Pallikäsitsemine surve all', 'Владение мячом под давлением'], s: ['Põrgatamine, mis peab vastu kehakontaktile', 'Ведение, которое выдерживает контакт'],
+    why: ['3x3-s pole kedagi, kes palli üle väljaku tooks. Iga mängija peab hakkama saama palliga, kui kaitsja on lähedal ja füüsiline.', 'В 3x3 нет разыгрывающего, который выводит мяч. Каждый игрок должен справляться с мячом, когда защитник рядом и играет жёстко.'],
+    keys: [['Pea üleval, silmad korvi ja kaaslaste peal', 'Голова поднята, глаза на кольце и партнёрах'], ['Madal põrge, keha palli ja kaitsja vahel', 'Низкое ведение, тело между мячом и защитником'], ['Mõlema käega võrdselt', 'Одинаково обеими руками']],
+    drills: [[['Paigal põrgatamine', 'Ведение на месте'], ['5 minutit: tugev põrge parema ja vasaku käega, vahetus ette, jalgade vahelt, selja tagant. 30 sekundit iga harjutus.', '5 минут: сильное ведение правой и левой, перевод перед собой, между ног, за спиной. По 30 секунд каждое упражнение.']], [['Kaks palli', 'Два мяча'], ['2 minutit kahe palliga: samaaegselt, vaheldumisi, üks kõrge ja teine madal.', '2 минуты с двумя мячами: одновременно, поочерёдно, один высоко, другой низко.']], [['Kaitsja käega', 'С рукой защитника'], ['Sõber tõukab kergelt ja üritab palli ära lüüa, sina põrgatad 30 sekundit kaare taga palli kaotamata.', 'Партнёр слегка толкает и пытается выбить мяч, ты 30 секунд ведёшь за дугой, не теряя мяч.']]],
+    vids: [['teqk-UDPCrc', '10 Minute At-Home Dribbling Workout (Follow Along)', 'BBall IQ', '10:43'], ['CLoWxOvlHkk', 'The Ultimate 5 Minute Ball Handling Workout for Beginners', 'ILoveBasketballTV', '7:24']] },
+  { t: ['Esimene samm ja 1 vs 1 rünnak', 'Первый шаг и атака 1 на 1'], s: ['Möödu kaitsjast ühe sammuga', 'Обыграй защитника одним шагом'],
+    why: ['3x3 on täis 1 vs 1 olukordi. Kiire esimene samm ja õige nurk korvi suunas toovad punkte ja avavad kaaslasi.', '3x3 полон ситуаций 1 на 1. Быстрый первый шаг и правильный угол к кольцу приносят очки и открывают партнёров.'],
+    keys: [['Madal lähteasend, raskus esimese sammu jalal', 'Низкая стойка, вес на ноге первого шага'], ['Esimene samm kaitsja jalast mööda, mitte temast eemale', 'Первый шаг мимо ноги защитника, а не от него'], ['Pärast esimest sammu lõpeta, viska või sööda: otsusta kiiresti', 'После первого шага завершай, бросай или отдавай: решай быстро']],
+    drills: [[['Kolmikoht', 'Тройная угроза'], ['Kaare taga: pall kätte, kolmikoht (vise, sööt, põrge), pettesamm, esimene samm ja 2 põrget korvini. 10 korda kummalegi poole.', 'За дугой: поймай мяч, тройная угроза (бросок, пас, ведение), финт, первый шаг и 2 удара до кольца. По 10 раз в каждую сторону.']], [['Tool kaitsjaks', 'Стул вместо защитника'], ['Pane tool kaare juurde. Kiire esimene samm tooli kõrvalt ja lõpetamine. 3 × 8.', 'Поставь стул у дуги. Быстрый первый шаг мимо стула и завершение. 3 × 8.']]],
+    vids: [['rDBFSxpOfac', 'Get a Lightning Quick First Step', 'ShotMechanics', '4:20'], ['19tNtl-ploU', 'Drive Like a Pro! Ep. 1: Driving Angles', 'David Mason', '8:16']] },
+  { t: ['Kahepunktiline vise', 'Бросок из-за дуги (2 очка)'], s: ['Vise kaare tagant: söödust ja põrkest', 'С ловли и с ведения'],
+    why: ['Kaare tagant saab 2 punkti, seest ainult 1. Tiim, kes tabab kaare tagant, võidab enamasti mängu. Seepärast on see 3x3 kõige olulisem oskus.', 'Из-за дуги — 2 очка, изнутри — только 1. Команда, которая попадает из-за дуги, обычно выигрывает. Поэтому это самый важный навык в 3x3.'],
+    keys: [['Sama liigutus igast kohast: jalad, küünarnukk, järelliigutus', 'Одинаковое движение с любой точки: ноги, локоть, сопровождение'], ['Söödust: jalad valmis enne palli saabumist', 'С ловли: ноги готовы до прихода мяча'], ['Põrkest: peatumine kahe jalaga tasakaalus, vise üles, mitte ette', 'С ведения: остановка на две ноги в равновесии, бросок вверх, а не вперёд']],
+    drills: [[['5 kohta', '5 точек'], ['Viis kohta kaare taga, igast kohast 5 viset. Pane tabamused kirja.', 'Пять точек за дугой, с каждой по 5 бросков. Записывай попадания.']], [['Vise põrkest', 'Бросок с ведения'], ['Kaare juurest 1–2 põrget küljele ja vise. 3 × 10 kummalegi poole.', 'От дуги 1–2 удара в сторону и бросок. 3 × 10 в каждую сторону.']], [['Väsinult', 'Уставшей'], ['Pärast 20-sekundilist sprinti 5 viset kaare tagant, nagu mängu lõpus.', 'После 20-секундного рывка 5 бросков из-за дуги, как в конце игры.']]],
+    vids: [['nWgcOlUQM4U', 'Tips, Skills, and Drills: Shooting', 'USA Basketball', '3:08'], ['gRAwl4slNOE', 'Perfect Shooting Form for Girls', 'Hardwood Basketball', '2:46'], ['X2Ezlb942qI', 'Shooting Off the Dribble Becomes Easy After Doing This Drill', 'ILoveBasketballTV', '0:27']] },
+  { t: ['Lõpetamine läbi kontakti', 'Завершение через контакт'], s: ['Korvi all kehaga ja mõlema käega', 'Под кольцом корпусом и обеими руками'],
+    why: ['3x3 on füüsiline mäng ja kohtunikud lasevad rohkem kontakti. Korvi all peab oskama visata ka siis, kui kaitsja on vastu kehas.', '3x3 — контактная игра, и судьи позволяют больше борьбы. Под кольцом нужно уметь забивать, даже когда защитник давит корпусом.'],
+    keys: [['Kontakt enne viset, mitte viske ajal: löö õlg kaitsja vastu ja tõuse', 'Контакт до броска, а не во время: толкни плечом и выпрыгивай'], ['Kaitse palli keha ja kahe käega', 'Защищай мяч телом и двумя руками'], ['Paremalt parema käega, vasakult vasaku käega', 'Справа правой рукой, слева левой']],
+    drills: [[['Mikani harjutus', 'Упражнение Майкана'], ['1 minut vaheldumisi paremalt ja vasakult korvi alt, pall ei puuduta maad. 3 korda.', '1 минута поочерёдно справа и слева из-под кольца, мяч не касается пола. 3 раза.']], [['Kontakt padjaga', 'Контакт с подушкой'], ['Sõber hoiab patja või palli ja lööb kergelt vastu, kui sa tõused. 3 × 8 kummaltki poolt.', 'Партнёр держит подушку или мяч и слегка толкает, когда ты выпрыгиваешь. 3 × 8 с каждой стороны.']], [['Ilma partnerita', 'Без партнёра'], ['Viska pall vastu maad, püüa kahe jalaga maandudes ja lõpeta kõrgelt. 3 × 10.', 'Брось мяч об пол, поймай с приземлением на две ноги и завершай высоко. 3 × 10.']]],
+    vids: [['OrfhQdRbTXA', '3 Ways To Finish Through Contact', 'Pro Training Basketball', '5:56'], ['0vf37fesszc', 'How to Elevate Your Contact Finishing Skills (No Partner Needed)', 'By Any Means Basketball', '7:01']] },
+  { t: ['Ekraanid ja pick-and-roll', 'Заслоны и пик-н-ролл'], s: ['3x3 rünnaku põhivõte', 'Основа атаки в 3x3'],
+    why: ['Kolme mängijaga on platsil palju ruumi. Iga ekraan sunnib kaitset otsustama, kas vahetada või jälitada. Hea ekraan ja õige valik pärast seda loovad vaba viske.', 'При трёх игроках на площадке много места. Каждый заслон заставляет защиту решать: переключаться или преследовать. Хороший заслон и правильное решение после него создают открытый бросок.'],
+    keys: [['Ekraani pannes seisa kindlalt, jalad laiali, käed keha juures', 'Ставя заслон, стой твёрдо, ноги широко, руки у тела'], ['Pallimängija: oota ekraan ära ja mine kaaslase õla kõrvalt mööda', 'С мячом: дождись заслона и проходи впритирку к плечу партнёра'], ['Ekraani panija: rulli korvi poole või astu kaare taha viskeks', 'Поставившая заслон: открывайся к кольцу или выходи за дугу на бросок']],
+    drills: [[['Pick-and-roll kahekesi', 'Пик-н-ролл вдвоём'], ['Kaare juures ekraan, pallimängija põrgatab mööda, ekraani panija rullib korvile. 10 korda kummalegi poole, siis 10 korda kaare taha.', 'У дуги заслон, игрок с мячом проходит, поставившая заслон открывается к кольцу. По 10 раз в каждую сторону, затем 10 раз с выходом за дугу.']], [['Käest kätte (handoff)', 'Передача из рук в руки (handoff)'], ['Üks põrgatab teise poole ja annab palli käest kätte, saaja viskab või läheb korvile. 3 × 8.', 'Одна ведёт к другой и отдаёт мяч из рук в руки, получившая бросает или идёт к кольцу. 3 × 8.']]],
+    vids: [['db22lmGpGbM', '3x3 Playbook – Spanish Pick and Roll', 'Roger Franch', '0:29'], ['7ZOL5S4YSiI', '3x3 Playbook – Ghost Screen', 'Roger Franch', '0:54'], ['_D_PuriQ7Tk', '3 Pick and Roll Drills to Become a Better Basketball Player', 'IMG Academy', '4:10']] },
+  { t: ['1 vs 1 kaitse ja vahetamine', 'Защита 1 на 1 и переключение'], s: ['Kaitse ükskõik keda', 'Защищай кого угодно'],
+    why: ['3x3-s vahetatakse ekraanide peal sageli vastaseid ja võid sattuda kaitsma pikemat või kiiremat mängijat. Vahetamine on tavaline ja igaüks peab oskama kaitsta igaüht.', 'В 3x3 на заслонах часто переключаются, и ты можешь оказаться против более высокой или быстрой соперницы. Переключение — норма, и каждая должна уметь защищаться против любой.'],
+    keys: [['Madal asend, aktiivsed käed, jalad ei ristu', 'Низкая стойка, активные руки, ноги не скрещиваются'], ['Kaitse kaare taga tugevalt: 2-punktiline vise on kõige ohtlikum', 'Жёстко защищайся за дугой: бросок на 2 очка самый опасный'], ['Räägi: hüüa „ekraan!" ja „vahetan!"', 'Говори: кричи «заслон!» и «меняемся!»']],
+    drills: [[['Libisemine', 'Приставные шаги'], ['Kaitseasendis külgjoonelt külgjoonele, 30 sekundit tööd, 30 sekundit puhkust, 6 korda.', 'В защитной стойке от боковой до боковой линии, 30 секунд работы, 30 секунд отдыха, 6 раз.']], [['Vastu tulemine (closeout)', 'Выход на игрока (closeout)'], ['Korvi alt sprint kaare juurde, viimased sammud lühikesed, käsi üles, siis libisemine. 10 korda.', 'Рывок из-под кольца к дуге, последние шаги короткие, рука вверх, затем приставные шаги. 10 раз.']], [['1 vs 1 kaare juurest', '1 на 1 от дуги'], ['Ründaja alustab kaare tagant, kaitsja peab vastu 12 sekundit. Vahetage rolle.', 'Нападающая начинает за дугой, защитница держится 12 секунд. Меняйтесь ролями.']]],
+    vids: [['DEkeqhBBzoI', 'How Should a 3x3 Player Defend?', 'Roger Franch', '3:23'], ['FWWi46rqCec', 'Closeout 1-On-1 Drill', 'Jr. NBA Jr. WNBA', '1:30'], ['aSvFDJcIzys', 'Closeout, Slide, & Backpedal Drill', 'Jr. NBA Jr. WNBA', '1:10']] },
+  { t: ['Lauapall ja clear', 'Подбор и вынос мяча (clear)'], s: ['Võida pall ja vii see kiiresti kaare taha', 'Забери мяч и быстро вынеси за дугу'],
+    why: ['Iga lauapall on 3x3-s uus rünnak. Pärast kaitse lauapalli tuleb pall viia kaare taha, ja kes teeb seda kõige kiiremini, ründab enne, kui vastane on kaitses valmis.', 'Каждый подбор в 3x3 — новая атака. После подбора в защите мяч нужно вынести за дугу, и кто делает это быстрее всех, атакует до того, как соперник готов защищаться.'],
+    keys: [['Blokeeri vastane välja (box out): kontakt, selg vastase poole, siis pall', 'Блокируй соперницу (box out): контакт, спиной к ней, потом мяч'], ['Kaitse lauapalli järel kohe kaare taha, põrgatades või söötes', 'После подбора в защите сразу за дугу, ведением или пасом'], ['Ründe lauapalli järel võib kohe visata, clear pole vaja', 'После подбора в нападении можно сразу бросать, выносить не нужно']],
+    drills: [[['Viska, võta, clear', 'Бросок, подбор, вынос'], ['Viska pall vastu lauda, võta see kõrgelt kahe käega, põrgata kiiresti kaare taha ja viska. 10 korda.', 'Брось мяч в щит, сними его высоко двумя руками, быстро выведи за дугу и брось. 10 раз.']], [['Box out paarilisega', 'Блокировка с партнёром'], ['Sõber viskab, sina blokeerid kolmanda välja ja võtad palli. Vahetage rolle. 3 × 6.', 'Подруга бросает, ты блокируешь третью и забираешь мяч. Меняйтесь ролями. 3 × 6.']]],
+    vids: [['2ls7IaGn7Q4', 'Grab More Rebounds: How To Correctly Block Out', 'Pro Training Basketball', '3:43'], ['1Y2Rz1cIabA', '3X3 Clearing The Ball', 'We All Are The Game', '1:35']] },
+  { t: ['Liikumine ilma pallita ja suhtlus', 'Движение без мяча и общение'], s: ['Ole ohtlik ka siis, kui pall pole sinu käes', 'Будь опасной и без мяча'],
+    why: ['Kolmest mängijast kaks on alati ilma pallita. Lõiked, ekraanid ja õige paigutus teevad ruumi pallimängijale. Kuna treener mängu ajal juhendada ei saa, peavad mängijad ise rääkima.', 'Из трёх игроков двое всегда без мяча. Рывки, заслоны и правильная расстановка создают место игроку с мячом. Тренер не может подсказывать во время игры, поэтому игроки должны говорить сами.'],
+    keys: [['Ära seisa paigal: kui kaitsja vaatab palli, lõika', 'Не стой на месте: если защитник смотрит на мяч, делай рывок'], ['Hoia vahet: kaare taga teineteisest kaugel', 'Держи расстояние: за дугой подальше друг от друга'], ['Räägi kogu aeg: nimed, ekraanid, vahetused', 'Говори всё время: имена, заслоны, переключения']],
+    drills: [[['V-lõige ja sööt', 'V-рывок и пас'], ['Kahekesi: V-lõige kaare juurde, sööt, vise. Siis lõige korvile. 3 × 10.', 'Вдвоём: V-рывок к дуге, пас, бросок. Затем рывок к кольцу. 3 × 10.']], [['Kolmekesi: sööda, lõika, asenda', 'Втроём: отдай, открывайся, замени'], ['Kolm mängijat kaare taga: sööda ja lõika korvi poole, teised liiguvad tühja kohta. 3 minutit järjest.', 'Три игрока за дугой: отдай пас и рвись к кольцу, остальные занимают свободное место. 3 минуты подряд.']]],
+    vids: [['F2nUcJ6BL-g', '5 Moving Without the Ball Drills', 'Jay Jameson', '2:14'], ['bsXxSoiAVQU', '3x3 Playbook – Roller Cut', 'Roger Franch', '0:20'], ['U20ba8ImRz0', '3x3 Playbook – Tips', 'Roger Franch', '1:26']] },
+  { t: ['Vastupidavus, jõud ja vigastuste ennetus', 'Выносливость, сила и профилактика травм'], s: ['10 minutit täiskiirusel, 3–4 mängu päevas', '10 минут на полной скорости, 3–4 игры в день'],
+    why: ['3x3 mängus on vähe pause ja palju kehakontakti. Turniiril mängid mitu mängu päevas. Vastupidavus ja jõud otsustavad mängu lõpu ning hea soojendus hoiab sind terve.', 'В игре 3x3 мало пауз и много контакта. На турнире играешь несколько игр в день. Выносливость и сила решают конец игры, а хорошая разминка бережёт от травм.'],
+    keys: [['Neuromuskulaarne soojendus enne iga trenni (8–10 min)', 'Нервно-мышечная разминка перед каждой тренировкой (8–10 мин)'], ['Intervalltreening: 1–4 minutit väga kõvasti, puhkust poole vähem', 'Интервальная тренировка: 1–4 минуты очень интенсивно, отдых вдвое короче'], ['Jõud: kükk, väljaaste, plank, ühe jala harjutused', 'Сила: приседания, выпады, планка, упражнения на одной ноге']],
+    drills: [[['Soojendus (8–10 min)', 'Разминка (8–10 мин)'], ['Kerge jooks, külgliikumine, kükk, väljaaste, hüpped ja pehme maandumine põlved varvaste suunas, ühel jalal tasakaal.', 'Лёгкий бег, приставные шаги, приседания, выпады, прыжки с мягким приземлением (колени по направлению носков), баланс на одной ноге.']], [['3x3 intervall', 'Интервал 3x3'], ['6 × 2 minutit 1 vs 1 või täiskiirusel harjutust, vahel 1 minut puhkust.', '6 × 2 минуты 1 на 1 или упражнения на полной скорости, между ними 1 минута отдыха.']], [['Jõuring', 'Силовой круг'], ['3 ringi: 12 kükki, 10 väljaastet jala kohta, 30 sekundit planki, 10 ühe jala tõusu jala kohta.', '3 круга: 12 приседаний, по 10 выпадов на ногу, 30 секунд планки, по 10 подъёмов на одной ноге.']]],
+    vids: [['xWBSf4BfKRk', 'Game Changers: 7 Exercises to Prevent ACL Injuries', 'Safe Kids Worldwide', '4:03'], ['5h1csQRvEVg', 'Basketball Warm Up and Injury Prevention Guide', 'SA Country Basketball', '4:46']] }
+];
+var TOTAL_VIDS = S.reduce(function (n, s) { return n + s.vids.length; }, 0);
+
+var RULES = [
+  ['21 / 10:00', ['Mäng kestab 10 minutit või kuni üks tiim saab 21 punkti. Viigi korral on lisaaeg, mille võidab tiim, kes saab esimesena 2 punkti.', 'Игра длится 10 минут или до 21 очка. При ничьей — овертайм, его выигрывает команда, первой набравшая 2 очка.']],
+  ['1 / 2', ['Vise kaare seest annab 1 punkti, kaare tagant 2 punkti. Vabavise annab 1 punkti.', 'Бросок изнутри дуги — 1 очко, из-за дуги — 2 очка. Штрафной — 1 очко.']],
+  ['12 s', ['Rünnakul on viskeks aega 12 sekundit.', 'На атаку даётся 12 секунд.']],
+  ['Clear', ['Pärast kaitse lauapalli või vaheltlõiget tuleb pall viia kaare taha enne, kui tohib visata.', 'После подбора в защите или перехвата мяч нужно вынести за дугу, прежде чем бросать.']],
+  [['Pärast korvi', 'После попадания'], ['Pall pannakse mängu korvi alt väljaku seest, põrgatades või söötes kaare taha. Kaitsja ei tohi palli eest võidelda korvi all olevas poolringis.', 'Мяч вводится из-под кольца с площадки ведением или пасом за дугу. Защитник не может бороться за мяч в полукруге под кольцом.']],
+  ['3 + 1', ['Väljakul 3 mängijat, 1 vahetusmängija. Vahetus toimub seisaku ajal otsajoone taga puudutusega.', 'На площадке 3 игрока, 1 запасной. Замена во время остановки, касанием за лицевой линией.']],
+  ['7 / 10', ['Alates 7. meeskonnaveast saab vastane 2 vabaviset. Alates 10. veast 2 vabaviset ja lisaks palli.', 'С 7-го командного фола соперник получает 2 штрафных. С 10-го — 2 штрафных и владение.']],
+  [['Pall', 'Мяч'], ['3x3 pall on suuruselt 6 (nagu naiste pall), aga kaalult 7 (nagu meeste pall).', 'Мяч 3x3 размером 6 (как женский), но весом 7 (как мужской).']]
+];
+var PRACT = [
+  [['Alusta soojendusega', 'Начинай с разминки'], ['Uuringud tüdrukute ja naistega näitavad, et regulaarne neuromuskulaarne soojendus (hüpped, maandumine, tasakaal, jõud) vähendab põlve- ja hüppeliigese vigastusi. Tee see enne iga trenni ja mängu, ka üksi treenides.', 'Исследования среди девушек и женщин показывают: регулярная нервно-мышечная разминка (прыжки, приземление, баланс, сила) снижает травмы колена и голеностопа. Делай её перед каждой тренировкой и игрой, даже когда тренируешься одна.']],
+  [['Treeni nagu mängus', 'Тренируйся как в игре'], ['FIBA 3x3 juhend soovitab intervalltreeningut: 1–4 minutit väga suure intensiivsusega (90–95% maksimaalsest pulsist), puhkust poole vähem. Just selline on 3x3 mäng.', 'Руководство FIBA 3x3 рекомендует интервальную тренировку: 1–4 минуты с очень высокой интенсивностью (90–95% от максимального пульса), отдых вдвое короче. Именно такая игра 3x3.']],
+  [['Mängukiirusel', 'В игровом темпе'], ['Viska ja põrgata sama kiirusega nagu mängus. Aeglaselt õpitud vise ei pea surve all vastu.', 'Бросай и води мяч в том же темпе, что и в игре. Медленно выученный бросок не выдерживает давления.']],
+  [['Mõlema käega', 'Обеими руками'], ['3x3-s kaitsevad sind vaheldumisi kõik kolm vastast. Lõpeta ja põrgata mõlema käega, et olla ettearvamatu.', 'В 3x3 тебя по очереди защищают все три соперницы. Завершай и веди обеими руками, чтобы быть непредсказуемой.']],
+  [['Õues ja 3x3 palliga', 'На улице и мячом 3x3'], ['3x3 mängitakse sageli õues, tuule ja päikese käes. Treeni suvel õues ja 3x3 palliga, mis on raskem kui naiste 5v5 pall.', '3x3 часто играют на улице, при ветре и солнце. Летом тренируйся на улице и мячом 3x3 — он тяжелее женского мяча 5x5.']],
+  [['Kuula oma keha', 'Слушай своё тело'], ['Kasvavas eas tüdrukud teevad niigi palju trenni. Lisatreening ei tohi tulla une ja puhkuse arvelt. Valu korral peatu ja räägi treeneriga.', 'Растущие девушки и так много тренируются. Дополнительные занятия не должны идти за счёт сна и отдыха. При боли остановись и поговори с тренером.']]
+];
+var TESTS = [
+  { id: 'vise2', n: ['2-punktiline viske test', 'Тест на броски из-за дуги'], how: ['5 kohta kaare taga (mõlemad nurgad, mõlemad tiivad, keskelt), igast kohast 4 viset söödust või enda põrkest. Kokku 20 viset.', '5 точек за дугой (оба угла, оба фланга, центр), с каждой по 4 броска с ловли или с ведения. Всего 20 бросков.'], unit: ['tabamust 20-st', 'попаданий из 20'], max: 20 },
+  { id: 'mikan', n: ['Lõpetamise test', 'Тест на завершение'], how: ['30 sekundit Mikani harjutust: vaheldumisi paremalt parema käega ja vasakult vasaku käega. Loe tabamused.', '30 секунд упражнения Майкана: справа правой рукой, слева левой. Считай попадания.'], unit: ['tabamust 30 sekundiga', 'попаданий за 30 секунд'], max: 60 },
+  { id: 'sprint', n: ['3x3 vastupidavuse test', 'Тест на выносливость 3x3'], how: ['Kaare tagant korvi alla ja tagasi nii mitu korda, kui 60 sekundiga jõuad, iga kord joont puudutades. Loe ringid.', 'Из-за дуги к кольцу и обратно столько раз, сколько успеешь за 60 секунд, каждый раз касаясь линии. Считай круги.'], unit: ['ringi 60 sekundiga', 'кругов за 60 секунд'], max: 60 }
+];
+
+/* ---------- state ---------- */
+var KEY = 'hoov:v2';
+var state = { lang: null, watched: {}, mastered: {}, plans: [], tests: {}, updatedAt: 0 };
+try { var raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) {}
+var cloud = null, cloudTimer = null;
+function persist() {
+  state.updatedAt = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  if (cloud) { clearTimeout(cloudTimer); cloudTimer = setTimeout(function () { cloud.set(JSON.parse(JSON.stringify(state))).catch(function () {}); }, 1200); }
+}
+
+/* ---------- language ---------- */
+var hashLang = (location.hash || '').replace('#', '');
+L = hashLang === 'ru' || hashLang === 'et' ? hashLang : (state.lang || ((navigator.language || '').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'et'));
+function setLang(l) {
+  L = l; state.lang = l; persist();
+  try { history.replaceState(null, '', '#' + l); } catch (e) {}
+  renderAll();
+}
+document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
+window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if ((h === 'et' || h === 'ru') && h !== L) setLang(h); });
+
+/* ---------- helpers ---------- */
+var play = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-2 14.5v-9l7 4.5-7 4.5Z"/></svg>';
+var chev = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+function $(id) { return document.getElementById(id); }
+function skillName(i) { return tr(S[i].t); }
+function drillNames(i) { return S[i].drills.map(function (d) { return tr(d[0]); }).join(', '); }
+function watchedIn(i) { return S[i].vids.filter(function (v) { return state.watched[v[0]]; }).length; }
+function todayISO() { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); }
+function fmtDate(iso) { if (!iso) return ''; var p = iso.split('-'); return L === 'ru' ? p[2] + '.' + p[1] + '.' + p[0] : (+p[2]) + '.' + (+p[1]) + '.' + p[0]; }
+function skillOptions(sel, withNone) {
+  var o = withNone ? '<option value="-1">' + esc(tr(T.fNone)) + '</option>' : '';
+  return o + S.map(function (s, i) { return '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>' + (i + 1) + '. ' + esc(tr(s.t)) + '</option>'; }).join('');
+}
+
+/* ---------- plan generation (structured, rendered in either language) ---------- */
+function session(min, focus) {
+  var warm = min <= 30 ? 8 : 10, rest = min - warm, b = [{ k: 'warm', m: warm }];
+  if (focus === 3) { var f4 = Math.round(rest * 0.7); b.push({ k: 'skill', s: 3, m: f4 }); b.push({ k: 'str', m: rest - f4 }); }
+  else if (focus === 9) { var f9 = Math.round(rest * 0.6); b.push({ k: 'skill', s: 9, m: f9 }); b.push({ k: 'shoot', m: rest - f9 }); }
+  else { var f = Math.round(rest * 0.5), sh = Math.round(rest * 0.3); b.push({ k: 'skill', s: focus, m: f }); b.push({ k: 'shoot', m: sh }); b.push({ k: 'str', m: rest - f - sh }); }
+  return b;
+}
+function blockText(b) {
+  if (b.k === 'warm') return [tr(T.warm), drillNames(9).split(', ')[0]];
+  if (b.k === 'shoot') return [tr(T.shoot), tr(T.skillWord) + ' 4'];
+  if (b.k === 'str') return [tr(T.str), tr(T.skillWord) + ' 10'];
+  return [tr(T.skillWord) + ' ' + (b.s + 1) + ': ' + skillName(b.s), drillNames(b.s)];
+}
+function genDay(f) { return { type: 'day', date: f.date, goal: f.goal, min: f.min, skill: f.skill, items: session(f.min, f.skill).map(function (b) { return { b: b }; }) }; }
+function genWeek(f) {
+  var free = [], club = [];
+  for (var d = 0; d < 7; d++) (f.club.indexOf(d) >= 0 ? club : free).push(d);
+  var chosen = [];
+  if (free.length >= f.n) { for (var i = 0; i < f.n; i++) chosen.push(free[Math.floor(i * free.length / f.n)]); }
+  else { chosen = free.slice(); for (var j = 0; chosen.length < f.n && j < club.length; j++) chosen.push(club[j]); }
+  chosen.sort(function (a, b) { return a - b; });
+  var foci = f.skill2 >= 0 ? [f.skill, f.skill2] : [f.skill];
+  return { type: 'week', start: f.date, goal: f.goal, items: chosen.map(function (day, k) { var s = foci[k % foci.length]; return { day: day, min: f.min, s: s, club: f.club.indexOf(day) >= 0 }; }) };
+}
+function genMonth(f) { return { type: 'month', start: f.date, goal: f.goal, skill: f.skill, items: [0, 1, 2, 3].map(function (w) { return { w: w, s: f.skill }; }) }; }
+var ROT = { 8: 0, 9: 1, 10: 3, 11: 2, 0: 4, 1: 6, 2: 5, 3: 7, 4: 8, 5: 9, 6: 3, 7: 5 };
+function yPhase(m) { return m === 8 ? 'sept' : (m === 4 ? 'may' : (m >= 5 && m <= 7 ? 'summer' : 'season')); }
+function genYear(f) { var items = []; for (var i = 0; i < 12; i++) { var m = (f.month + i) % 12; items.push({ m: m, s: ROT[m], test: m === 8 || m === 0 || m === 4 }); } return { type: 'year', startMonth: f.month, goal: f.goal, items: items }; }
+function itemView(plan, it) {
+  if (plan.type === 'day') { var bt = blockText(it.b); return { tag: it.b.m + ' ' + tr(T.min), main: bt[0], sub: bt[1] }; }
+  if (plan.type === 'week') {
+    var parts = session(it.min, it.s).map(function (b) { return blockText(b)[0].split(':')[0]; });
+    return { tag: tr(T.days)[it.day], main: it.min + ' ' + tr(T.min) + ' · ' + tr(T.skillWord) + ' ' + (it.s + 1) + ': ' + skillName(it.s), sub: drillNames(it.s) + (it.club ? ' · ' + tr(T.clubDay) : '') };
+  }
+  if (plan.type === 'month') { var ph = T.phases[it.w]; return { tag: tr(T.week) + ' ' + (it.w + 1), main: (L === 'ru' ? ph[1] : ph[0]) + ': ' + skillName(it.s), sub: (L === 'ru' ? ph[3] : ph[2]) + (it.w < 3 ? ' ' + drillNames(it.s) + '.' : '') };
+  }
+  var phase = tr(T.yPhase[yPhase(it.m)]);
+  return { tag: tr(T.months)[it.m].slice(0, 3), main: tr(T.months)[it.m].charAt(0).toUpperCase() + tr(T.months)[it.m].slice(1) + ' · ' + tr(T.skillWord) + ' ' + (it.s + 1) + ': ' + skillName(it.s), sub: phase + (it.test ? ' · ' + tr(T.tests) : '') };
+}
+function planTitle(p) {
+  var t = tr(T.pType[p.type]);
+  if (p.type === 'day') return t + ' · ' + fmtDate(p.date);
+  if (p.type === 'year') return t + ' · ' + tr(T.months)[p.startMonth];
+  return t + ' · ' + fmtDate(p.start);
+}
+
+/* ---------- render ---------- */
+var openSkills = { 0: true }; var ptab = 0; var draft = null; var savedFlash = false;
+function renderStatic() {
+  document.documentElement.lang = L;
+  document.querySelectorAll('[data-t]').forEach(function (n) { n.textContent = tr(T[n.getAttribute('data-t')]); });
+  $('h1').innerHTML = tr(T.h1);
+  document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === L ? 'true' : 'false'); });
+  var ids = ['alusta', 'kursus', 'planeerija', 'plaanid', 'testid', 'reeglid', 'tavad'];
+  $('navlinks').innerHTML = tr(T.nav).map(function (n, i) { return '<button type="button" data-go="' + ids[i] + '">' + esc(n) + '</button>'; }).join('');
+  $('facts').innerHTML = '<span>10 ' + esc(tr(T.factSkills)) + '</span><span>' + TOTAL_VIDS + ' ' + esc(tr(T.factVids)) + '</span><span>4 ' + esc(tr(T.factPlans)) + '</span><span>3 ' + esc(tr(T.factTests)) + '</span>';
+  $('start').innerHTML = T.start.map(function (x, i) { return '<div class="card"><b class="k">' + (i + 1) + '</b><h3>' + esc(tr(x[0])) + '</h3><p>' + esc(tr(x[1])) + '</p></div>'; }).join('');
+  $('rules').innerHTML = RULES.map(function (r) { return '<div class="card"><b class="k">' + esc(tr(r[0])) + '</b><p>' + esc(tr(r[1])) + '</p></div>'; }).join('');
+  $('practices').innerHTML = PRACT.map(function (r) { return '<div class="card"><h3>' + esc(tr(r[0])) + '</h3><p>' + esc(tr(r[1])) + '</p></div>'; }).join('');
+}
+function renderProgress() {
+  var w = Object.keys(state.watched).filter(function (k) { return state.watched[k]; }).length;
+  var m = Object.keys(state.mastered).filter(function (k) { return state.mastered[k]; }).length;
+  $('progress').innerHTML =
+    '<div class="pr-row"><strong>' + esc(tr(T.progVids)) + '</strong><span class="num">' + w + ' / ' + TOTAL_VIDS + '</span><div class="bar-track"><div class="bar-fill" style="width:' + (100 * w / TOTAL_VIDS) + '%"></div></div></div>' +
+    '<div class="pr-row"><strong>' + esc(tr(T.progSkills)) + '</strong><span class="num">' + m + ' / 10</span><div class="bar-track"><div class="bar-fill ok" style="width:' + (10 * m) + '%"></div></div></div>';
+}
+function renderSkills() {
+  $('skills').innerHTML = S.map(function (s, i) {
+    var wv = watchedIn(i), done = !!state.mastered[i];
+    var pill = done ? '<span class="pill ok">' + esc(tr(T.mastered)) + '</span>' : '<span class="pill num">' + wv + '/' + s.vids.length + ' ' + esc(tr(T.ofVids)) + '</span>';
+    var vids = s.vids.map(function (v) {
+      var seen = !!state.watched[v[0]];
+      return '<div class="vid' + (seen ? ' seen' : '') + '"><a href="https://www.youtube.com/watch?v=' + v[0] + '" target="_blank" rel="noopener">' + play + '<span>' + esc(v[1]) + '<small>' + esc(v[2]) + (v[3] ? ' · ' + v[3] : '') + ' · YouTube</small></span></a>' +
+        '<label class="tick"><input type="checkbox" data-vid="' + v[0] + '"' + (seen ? ' checked' : '') + '> ' + esc(tr(T.seen)) + '</label></div>';
+    }).join('');
+    return '<details class="skill' + (done ? ' done' : '') + '" data-skill="' + i + '"' + (openSkills[i] ? ' open' : '') + '><summary><span class="sn">' + (i + 1) + '</span><span class="st"><h3>' + esc(tr(s.t)) + '</h3><small>' + esc(tr(s.s)) + '</small></span>' + pill + chev + '</summary>' +
+      '<div class="skill-body"><p class="why">' + esc(tr(s.why)) + '</p>' +
+      '<div><h3>' + esc(tr(T.keysH)) + '</h3><ul>' + s.keys.map(function (k) { return '<li>' + esc(tr(k)) + '</li>'; }).join('') + '</ul></div>' +
+      '<div style="display:grid;gap:8px"><h3>' + esc(tr(T.drillsH)) + '</h3>' + s.drills.map(function (d) { return '<div class="drill"><b>' + esc(tr(d[0])) + '</b><span>' + esc(tr(d[1])) + '</span></div>'; }).join('') + '</div>' +
+      '<div style="display:grid;gap:8px"><h3>' + esc(tr(T.vidsH)) + '</h3><div class="vids">' + vids + '</div></div>' +
+      '<button type="button" class="master" data-master="' + i + '" aria-pressed="' + done + '">' + esc(tr(done ? T.mastered : T.markMaster)) + '</button></div></details>';
+  }).join('');
+}
+function renderPlannerTabs() {
+  $('ptabs').innerHTML = tr(T.ptabs).map(function (n, i) { return '<button type="button" role="tab" id="pt-' + i + '" aria-controls="planner" aria-selected="' + (i === ptab) + '" tabindex="' + (i === ptab ? 0 : -1) + '">' + esc(n) + '</button>'; }).join('');
+}
+function renderPlanner() {
+  var f = '', today = todayISO(), goal = '<label class="wide" for="f-goal">' + esc(tr(T.fGoal)) + '<input type="text" id="f-goal" maxlength="140" placeholder="' + esc(tr(T.fGoalPh)) + '"></label>';
+  var dur = function (def) { return '<label for="f-min">' + esc(tr(T.fDur)) + '<select id="f-min">' + [20, 30, 45, 60].map(function (m) { return '<option value="' + m + '"' + (m === def ? ' selected' : '') + '>' + m + ' ' + esc(tr(T.min)) + '</option>'; }).join('') + '</select></label>'; };
+  if (ptab === 0) f = '<label for="f-date">' + esc(tr(T.fDate)) + '<input type="date" id="f-date" value="' + today + '"></label>' + dur(30) + '<label for="f-skill">' + esc(tr(T.fSkill)) + '<select id="f-skill">' + skillOptions(3) + '</select></label>' + goal;
+  if (ptab === 1) f = '<label for="f-date">' + esc(tr(T.fStart)) + '<input type="date" id="f-date" value="' + today + '"></label>' +
+    '<label for="f-n">' + esc(tr(T.fSessions)) + '<select id="f-n"><option>2</option><option>3</option><option>4</option></select></label>' + dur(30) +
+    '<label for="f-skill">' + esc(tr(T.fSkill)) + '<select id="f-skill">' + skillOptions(3) + '</select></label>' +
+    '<label for="f-skill2">' + esc(tr(T.fSkill2)) + '<select id="f-skill2">' + skillOptions(-1, true) + '</select></label>' +
+    '<fieldset><legend>' + esc(tr(T.fClub)) + '</legend><div class="days">' + tr(T.days).map(function (d, i) { return '<label for="f-club-' + i + '"><input type="checkbox" id="f-club-' + i + '" value="' + i + '"> ' + esc(d) + '</label>'; }).join('') + '</div></fieldset>' + goal;
+  if (ptab === 2) f = '<label for="f-date">' + esc(tr(T.fStart)) + '<input type="date" id="f-date" value="' + today + '"></label><label for="f-skill">' + esc(tr(T.fSkill)) + '<select id="f-skill">' + skillOptions(3) + '</select></label>' + goal;
+  if (ptab === 3) { var cm = new Date().getMonth(); f = '<label for="f-month">' + esc(tr(T.fStartMonth)) + '<select id="f-month">' + tr(T.months).map(function (m, i) { return '<option value="' + i + '"' + (i === cm ? ' selected' : '') + '>' + esc(m) + '</option>'; }).join('') + '</select></label>' + goal; }
+  $('planner').innerHTML = '<form class="form" id="pform">' + f + '<div><button type="submit" class="btn">' + esc(tr(T.make)) + '</button></div></form><div id="preview"></div>';
+  $('pform').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = function (id) { var n = $(id); return n ? n.value : null; };
+    var base = { date: v('f-date') || today, goal: (v('f-goal') || '').trim(), min: +(v('f-min') || 30), skill: +(v('f-skill') || 0) };
+    if (ptab === 0) draft = genDay(base);
+    if (ptab === 1) { base.n = +v('f-n'); base.skill2 = +v('f-skill2'); if (base.skill2 === base.skill) base.skill2 = -1; base.club = []; for (var i = 0; i < 7; i++) if ($('f-club-' + i).checked) base.club.push(i); draft = genWeek(base); }
+    if (ptab === 2) draft = genMonth(base);
+    if (ptab === 3) { base.month = +v('f-month'); draft = genYear(base); }
+    savedFlash = false; renderPreview();
+  });
+  renderPreview();
+}
+function renderPreview() {
+  var p = $('preview'); if (!p) return;
+  if (!draft) { p.innerHTML = ''; return; }
+  p.className = 'preview';
+  p.innerHTML = '<h3>' + esc(planTitle(draft)) + '</h3>' + (draft.goal ? '<p class="goal" style="font-weight:600">' + esc(draft.goal) + '</p>' : '') +
+    '<ul class="items">' + draft.items.map(function (it) { var x = itemView(draft, it); return '<li><span class="tag">' + esc(x.tag) + '</span><span>' + esc(x.main) + '<span class="sub">' + esc(x.sub) + '</span></span></li>'; }).join('') + '</ul>' +
+    '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="psave">' + esc(tr(T.save)) + '</button>' + (savedFlash ? '<span class="saved-msg">' + esc(tr(T.savedMsg)) + '</span>' : '') + '</div>';
+  $('psave').addEventListener('click', function () {
+    var plan = JSON.parse(JSON.stringify(draft)); plan.id = 'p' + Date.now().toString(36); plan.created = Date.now(); plan.done = plan.items.map(function () { return false; });
+    state.plans.unshift(plan); persist(); savedFlash = true; renderPreview(); renderPlans();
+  });
+}
+var pendingDelete = null;
+function renderPlans() {
+  var box = $('plans');
+  if (!state.plans.length) { box.innerHTML = '<p class="empty">' + esc(tr(T.noPlans)) + '</p>'; return; }
+  box.innerHTML = state.plans.map(function (p) {
+    var n = p.done.filter(Boolean).length, tot = p.items.length;
+    return '<article class="plan" data-plan="' + p.id + '"><header><h3>' + esc(planTitle(p)) + '</h3><span class="muted num">' + n + ' / ' + tot + ' ' + esc(tr(T.done)) + '</span></header>' +
+      (p.goal ? '<p class="goal">' + esc(p.goal) + '</p>' : '') +
+      '<div class="bar-track"><div class="bar-fill ok" style="width:' + (100 * n / tot) + '%"></div></div>' +
+      '<ul class="items">' + p.items.map(function (it, i) { var x = itemView(p, it), id = 'c-' + p.id + '-' + i; return '<li class="' + (p.done[i] ? 'done' : '') + '"><input type="checkbox" id="' + id + '" data-plan="' + p.id + '" data-i="' + i + '"' + (p.done[i] ? ' checked' : '') + '><label class="tag" for="' + id + '">' + esc(x.tag) + '</label><label class="body" for="' + id + '">' + esc(x.main) + '<span class="sub">' + esc(x.sub) + '</span></label></li>'; }).join('') + '</ul>' +
+      '<footer><button type="button" class="del' + (pendingDelete === p.id ? ' confirm' : '') + '" data-del="' + p.id + '">' + esc(tr(pendingDelete === p.id ? T.delConfirm : T.del)) + '</button></footer></article>';
+  }).join('');
+}
+function renderTests() {
+  $('tests').innerHTML = TESTS.map(function (t) {
+    var arr = state.tests[t.id] || [], log;
+    if (!arr.length) log = '<li class="empty">' + esc(tr(T.noRes)) + '</li>';
+    else { var best = Math.max.apply(null, arr.map(function (x) { return x.v; })); log = arr.slice(-6).reverse().map(function (x) { return '<li><span>' + esc(fmtDate(x.d)) + '</span><span class="num' + (x.v === best ? ' best' : '') + '">' + x.v + (x.v === best ? ' · ' + esc(tr(T.best)) : '') + '</span></li>'; }).join(''); }
+    return '<div class="test"><h3>' + esc(tr(t.n)) + '</h3><p>' + esc(tr(t.how)) + '</p><form data-test="' + t.id + '"><label for="in-' + t.id + '">' + esc(tr(T.result)) + ' (' + esc(tr(t.unit)) + ')<input type="number" id="in-' + t.id + '" min="0" max="' + t.max + '" required inputmode="numeric"></label><button type="submit" class="btn">' + esc(tr(T.saveRes)) + '</button></form><ul class="log">' + log + '</ul></div>';
+  }).join('');
+}
+function renderSync() { $('sync').textContent = tr(cloud ? T.syncCloud : T.syncLocal); }
+function renderAll() { renderStatic(); renderProgress(); renderSkills(); renderPlannerTabs(); renderPlanner(); renderPlans(); renderTests(); renderSync(); }
+
+/* ---------- events (delegated) ---------- */
+document.addEventListener('click', function (e) {
+  var go = e.target.closest('[data-go]'); if (go) { var t = $(go.getAttribute('data-go')); if (t) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); return; }
+  var ms = e.target.closest('[data-master]'); if (ms) { var i = +ms.getAttribute('data-master'); state.mastered[i] = !state.mastered[i]; persist(); openSkills[i] = true; renderProgress(); renderSkills(); return; }
+  var tab = e.target.closest('#ptabs [role=tab]'); if (tab) { ptab = +tab.id.slice(3); draft = null; renderPlannerTabs(); renderPlanner(); return; }
+  var del = e.target.closest('[data-del]');
+  if (del) { var id = del.getAttribute('data-del'); if (pendingDelete === id) { state.plans = state.plans.filter(function (p) { return p.id !== id; }); pendingDelete = null; persist(); } else pendingDelete = id; renderPlans(); return; }
+  if (pendingDelete) { pendingDelete = null; renderPlans(); }
+});
+document.addEventListener('keydown', function (e) {
+  var tab = e.target.closest && e.target.closest('#ptabs [role=tab]');
+  if (!tab || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+  ptab = (ptab + (e.key === 'ArrowRight' ? 1 : 3)) % 4; draft = null; renderPlannerTabs(); renderPlanner(); $('pt-' + ptab).focus();
+});
+document.addEventListener('change', function (e) {
+  var v = e.target.getAttribute('data-vid');
+  if (v) { state.watched[v] = e.target.checked; persist(); var d = e.target.closest('details'); openSkills[+d.getAttribute('data-skill')] = true; renderProgress(); renderSkills(); return; }
+  var pid = e.target.getAttribute('data-plan');
+  if (pid) { var p = state.plans.filter(function (x) { return x.id === pid; })[0]; if (p) { p.done[+e.target.getAttribute('data-i')] = e.target.checked; persist(); renderPlans(); } }
+});
+document.addEventListener('toggle', function (e) { if (e.target.matches && e.target.matches('details.skill')) openSkills[+e.target.getAttribute('data-skill')] = e.target.open; }, true);
+document.addEventListener('submit', function (e) {
+  var id = e.target.getAttribute('data-test'); if (!id) return;
+  e.preventDefault(); var inp = e.target.querySelector('input'), val = parseInt(inp.value, 10); if (isNaN(val)) return;
+  (state.tests[id] = state.tests[id] || []).push({ d: todayISO(), v: val }); persist(); renderTests();
+});
+
+renderAll();
+
+/* ---------- optional account sync (signed-in claude.ai viewers) ---------- */
+if (window.claude && typeof window.claude.use === 'function') {
+  Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (r) {
+    var db = r[0], user = r[1]; if (!db || !user) return null;
+    return user.id().then(function (uid) {
+      if (!uid) return null;
+      var ref = db.doc('data/users/' + uid + '/hoov');
+      return ref.get().then(function (snap) {
+        cloud = ref;
+        var remote = snap.exists ? snap.data() : null;
+        if (remote && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
+          state = Object.assign({ lang: L, watched: {}, mastered: {}, plans: [], tests: {}, updatedAt: 0 }, remote);
+          try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+          if (!hashLang && state.lang) L = state.lang;
+          renderAll();
+        } else { persist(); renderSync(); }
+      });
+    });
+  }).catch(function () { cloud = null; renderSync(); });
+}
+})();
+</script>
