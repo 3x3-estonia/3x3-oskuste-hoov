@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privaatsus · 3x3 oskuste hoov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700&display=swap">
+<style>
+:root { --bg: #F6F5F9; --surface: #FFFFFF; --fg: #1C1727; --muted: #5D566C; --line: #E1DCE9; --purple: #6B3FA0; --on-purple: #FFFFFF; }
+@media (prefers-color-scheme: dark) { :root { --bg: #14111B; --surface: #1E1929; --fg: #EDE9F4; --muted: #ABA3BB; --line: #322A42; --purple: #B79AE6; --on-purple: #14111B; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.65 "Inter", system-ui, sans-serif; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 32px max(16px, env(safe-area-inset-left, 0px)) 56px; display: grid; gap: 16px; }
+h1 { font-family: "Anton", Impact, sans-serif; font-weight: 400; text-transform: uppercase; font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.05; margin: 0; }
+h2 { font-size: 1.1rem; margin: 12px 0 0; }
+p, ul { margin: 0; }
+ul { padding-left: 1.2em; display: grid; gap: 4px; }
+a { color: var(--purple); }
+.top { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+.lang { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.lang a { text-decoration: none; font-weight: 700; font-size: .8rem; padding: 6px 12px; color: var(--fg); }
+.lang a.on { background: var(--purple); color: var(--on-purple); }
+.muted { color: var(--muted); font-size: .9rem; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="./">← 3x3 oskuste hoov</a><div class="lang"><a href="#et" id="l-et">ET</a><a href="#ru" id="l-ru">RU</a></div></div>
+
+  <article id="et">
+    <h1>Privaatsus</h1>
+    <p class="muted">Kehtib alates 14.11.2026</p>
+    <h2>Kes vastutab</h2>
+    <p>3x3 Estonia BC MTÜ (registrikood 80650485), Marati tn 5/2, 10123 Tallinn. Kontakt: 3x3estonia@gmail.com.</p>
+    <h2>Mida me kogume</h2>
+    <ul>
+      <li><strong>Konto andmed:</strong> e-posti aadress. Kui logid sisse Google'iga, edastab Google ka sinu nime ja profiilipildi lingi; need jäävad sisselogimisteenusesse, hoovi andmebaasi me neid ei salvesta.</li>
+      <li><strong>Trenniandmed:</strong> vaadatuks märgitud videod, omandatud oskused, sinu plaanid ja eesmärgid, enesetestide tulemused ja keelevalik.</li>
+    </ul>
+    <p>Me ei küsi sinu nime, kooli, klubi ega vanust. Reklaame ja külastusstatistikat lehel ei ole.</p>
+    <h2>Miks</h2>
+    <p>Et saaksid oma treeningkava ja edenemist kasutada igas seadmes. Andmeid töötleme sinu nõusolekul, mille annad kontot luues. Eestis võib alates 13. eluaastast sellise teenusega ise nõustuda; noorem kasutaja vajab vanema nõusolekut.</p>
+    <h2>Kes andmeid näeb</h2>
+    <p>Sinu trenniandmeid näed ainult sina. Andmebaasi reeglid ei luba ühelgi teisel kasutajal neid lugeda. Klubi ei vaata ega kasuta üksikute kasutajate andmeid; tehniline ligipääs on ainult klubi administraatoril hoolduse jaoks.</p>
+    <h2>Kus andmed asuvad</h2>
+    <p>Andmeid hoitakse Google Firebase'i teenuses (Google Ireland Ltd). Andmebaas asub Euroopa Liidus. Sisselogimisteenus võib osa andmeid töödelda ka väljaspool ELi; Google kasutab selleks Euroopa Komisjoni tüüptingimusi.</p>
+    <h2>Kui kaua</h2>
+    <p>Kuni kustutad oma konto. Konto ja kõik andmed kustutad ise lehel nupuga „Kustuta minu konto ja andmed" (jaotis „Minu plaanid").</p>
+    <h2>Sinu õigused</h2>
+    <p>Sul on õigus oma andmeid näha, parandada ja kustutada ning nõusolek igal ajal tagasi võtta. Küsimustega kirjuta 3x3estonia@gmail.com. Kui leiad, et rikume sinu õigusi, võid pöörduda Andmekaitse Inspektsiooni poole (aki.ee).</p>
+    <h2>Brauseri salvestus</h2>
+    <p>Leht hoiab sinu keelevalikut ja edenemist ka brauseri mälus, et leht töötaks kiiresti. Välja logides see kustutatakse.</p>
+  </article>
+
+  <article id="ru" hidden>
+    <h1>Конфиденциальность</h1>
+    <p class="muted">Действует с 14.11.2026</p>
+    <h2>Кто отвечает</h2>
+    <p>3x3 Estonia BC MTÜ (регистрационный код 80650485), Marati tn 5/2, 10123 Таллинн. Контакт: 3x3estonia@gmail.com.</p>
+    <h2>Что мы собираем</h2>
+    <ul>
+      <li><strong>Данные аккаунта:</strong> адрес электронной почты. При входе через Google он также передаёт твоё имя и ссылку на фото профиля; они остаются в сервисе входа, в базе данных двора навыков мы их не храним.</li>
+      <li><strong>Данные тренировок:</strong> отмеченные видео, освоенные навыки, твои планы и цели, результаты самотестов и выбор языка.</li>
+    </ul>
+    <p>Мы не спрашиваем твоё имя, школу, клуб или возраст. Рекламы и статистики посещений на сайте нет.</p>
+    <h2>Зачем</h2>
+    <p>Чтобы ты могла пользоваться своим планом тренировок и прогрессом на любом устройстве. Мы обрабатываем данные с твоего согласия, которое ты даёшь при создании аккаунта. В Эстонии с 13 лет можно самостоятельно соглашаться на такой сервис; младшим нужно согласие родителя.</p>
+    <h2>Кто видит данные</h2>
+    <p>Твои данные тренировок видишь только ты. Правила базы данных не позволяют другим пользователям их читать. Клуб не просматривает и не использует данные отдельных пользователей; технический доступ есть только у администратора клуба для обслуживания.</p>
+    <h2>Где хранятся данные</h2>
+    <p>Данные хранятся в сервисе Google Firebase (Google Ireland Ltd). База данных находится в Европейском союзе. Сервис входа может обрабатывать часть данных за пределами ЕС; Google использует для этого типовые условия Европейской комиссии.</p>
+    <h2>Как долго</h2>
+    <p>Пока ты не удалишь аккаунт. Аккаунт и все данные ты удаляешь сама кнопкой «Удалить мой аккаунт и данные» (раздел «Мои планы»).</p>
+    <h2>Твои права</h2>
+    <p>Ты имеешь право видеть, исправлять и удалять свои данные, а также в любой момент отозвать согласие. С вопросами пиши на 3x3estonia@gmail.com. Если считаешь, что мы нарушаем твои права, можешь обратиться в Инспекцию по защите данных Эстонии (aki.ee).</p>
+    <h2>Хранение в браузере</h2>
+    <p>Сайт хранит выбор языка и прогресс также в памяти браузера, чтобы работать быстрее. При выходе из аккаунта эти данные удаляются.</p>
+  </article>
+</div>
+<script>
+(function () {
+  function show() {
+    var ru = location.hash === '#ru';
+    document.getElementById('et').hidden = ru; document.getElementById('ru').hidden = !ru;
+    document.getElementById('l-et').className = ru ? '' : 'on'; document.getElementById('l-ru').className = ru ? 'on' : '';
+    document.documentElement.lang = ru ? 'ru' : 'et';
+  }
+  window.addEventListener('hashchange', show); show();
+})();
+</script>
+</body>
+</html>

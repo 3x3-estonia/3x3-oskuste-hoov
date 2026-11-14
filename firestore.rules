@@ -1,0 +1,19 @@
+rules_version = '2';
+// Iga kasutaja näeb ja muudab ainult oma dokumenti users/{oma uid}.
+// Kõik muu on keelatud.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['state', 'updatedAt'])
+        && request.resource.data.state is string
+        && request.resource.data.state.size() < 500000
+        && request.resource.data.updatedAt is number;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

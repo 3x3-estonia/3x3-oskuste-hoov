@@ -170,6 +170,17 @@ details[open] .chev { transform: rotate(180deg); }
 .log li { display: flex; justify-content: space-between; border-top: 1px dashed var(--line); padding-top: 4px; }
 .log .best { color: var(--ok); font-weight: 700; }
 
+.account { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; }
+.account .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.account label { display: grid; gap: 4px; font-size: .84rem; color: var(--muted); font-weight: 600; flex: 1 1 220px; min-width: 0; }
+.account input[type=email] { font: inherit; font-weight: 400; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; }
+.account .msg { font-size: .9rem; font-weight: 600; color: var(--ok); }
+.account .err { font-size: .9rem; font-weight: 600; color: #B3261E; }
+.account .small { font-size: .84rem; color: var(--muted); }
+.btn.google { background: var(--surface); color: var(--fg); border: 1px solid var(--line); display: inline-flex; gap: 8px; align-items: center; }
+.btn.google svg { width: 18px; height: 18px; }
+.acctbtn { flex: none; border: 1px solid var(--purple); color: var(--purple); background: none; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: .8rem; cursor: pointer; white-space: nowrap; max-width: 9rem; overflow: hidden; text-overflow: ellipsis; }
+.acctbtn.in { background: var(--purple); color: var(--on-purple); }
 footer.site { padding-block: 40px 48px; color: var(--muted); font-size: .84rem; }
 footer.site .wrap { display: grid; gap: 10px; }
 footer.site ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
@@ -195,6 +206,7 @@ footer.site a { word-break: break-word; }
 <nav class="bar">
   <div class="wrap">
     <div class="navlinks" id="navlinks"></div>
+    <button type="button" class="acctbtn" id="acctbtn" hidden></button>
     <div class="lang" role="group" aria-label="Keel / Язык">
       <button type="button" data-lang="et" aria-pressed="true">ET</button>
       <button type="button" data-lang="ru" aria-pressed="false">RU</button>
@@ -224,6 +236,7 @@ footer.site a { word-break: break-word; }
 
 <section id="plaanid"><div class="wrap">
   <h2 data-t="myPlansH"></h2>
+  <div class="account" id="account" hidden></div>
   <p class="sync" id="sync"></p>
   <div class="plans" id="plans"></div>
 </div></section>
@@ -339,7 +352,17 @@ var T = {
     summer: ['3x3 hooaeg: suvelaagrid ja turniirid, vahepeal 3–4 trenni nädalas', 'Сезон 3x3: летние лагеря и турниры, между ними 3–4 тренировки в неделю'],
     sept: ['Puhkus ja enesetestid, uue hooaja eesmärgid', 'Отдых и самотесты, цели на новый сезон']
   },
-  tests: ['enesetestid', 'самотесты']
+  tests: ['enesetestid', 'самотесты'],
+  signIn: ['Logi sisse', 'Войти'], acctH: ['Sinu konto', 'Твой аккаунт'],
+  acctLead: ['Logi sisse, et sinu kava, edenemine ja testitulemused oleksid alles igas seadmes. Parooli pole vaja.', 'Войди, чтобы твой план, прогресс и результаты тестов были доступны на любом устройстве. Пароль не нужен.'],
+  google: ['Jätka Google\'iga', 'Продолжить с Google'], emailLbl: ['Või saada sisselogimislink e-postile', 'Или получи ссылку для входа на почту'],
+  sendLink: ['Saada link', 'Отправить ссылку'], linkSent: ['Link on saadetud aadressile {e}. Ava see samas seadmes ja brauseris.', 'Ссылка отправлена на {e}. Открой её на этом же устройстве и в этом же браузере.'],
+  confirmEmail: ['Sisesta e-post, millele sisselogimislink saadeti', 'Введи почту, на которую пришла ссылка для входа'], finish: ['Lõpeta sisselogimine', 'Завершить вход'],
+  signedAs: ['Sisse logitud: {e}', 'Вход выполнен: {e}'], signOut: ['Logi välja', 'Выйти'],
+  delAcct: ['Kustuta minu konto ja andmed', 'Удалить мой аккаунт и данные'], delAcctConfirm: ['Kinnita: kustuta kõik jäädavalt', 'Подтверди: удалить всё навсегда'],
+  deleted: ['Konto ja andmed on kustutatud.', 'Аккаунт и данные удалены.'], reauth: ['Turvalisuse huvides logi uuesti sisse ja proovi siis uuesti.', 'В целях безопасности войди снова и повтори попытку.'],
+  privacy: ['Privaatsus', 'Конфиденциальность'], privacyShort: ['Salvestame ainult sinu konto andmed ja trenniandmed. Sinu plaane näed ainult sina.', 'Мы храним только данные аккаунта и тренировок. Твои планы видишь только ты.'],
+  err: ['Midagi läks valesti. Proovi uuesti.', 'Что-то пошло не так. Попробуй ещё раз.'], acctNav: ['Konto', 'Аккаунт']
 };
 
 /* ---------- skills ---------- */
@@ -429,7 +452,7 @@ var cloud = null, cloudTimer = null;
 function persist() {
   state.updatedAt = Date.now();
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-  if (cloud) { clearTimeout(cloudTimer); cloudTimer = setTimeout(function () { cloud.set(JSON.parse(JSON.stringify(state))).catch(function () {}); }, 1200); }
+  if (cloud) { clearTimeout(cloudTimer); cloudTimer = setTimeout(function () { cloud.save(JSON.parse(JSON.stringify(state))); }, 1200); }
 }
 
 /* ---------- language ---------- */
@@ -603,7 +626,7 @@ function renderTests() {
   }).join('');
 }
 function renderSync() { $('sync').textContent = tr(cloud ? T.syncCloud : T.syncLocal); }
-function renderAll() { renderStatic(); renderProgress(); renderSkills(); renderPlannerTabs(); renderPlanner(); renderPlans(); renderTests(); renderSync(); }
+function renderAll() { renderStatic(); renderProgress(); renderSkills(); renderPlannerTabs(); renderPlanner(); renderAccount(); renderPlans(); renderTests(); renderSync(); }
 
 /* ---------- events (delegated) ---------- */
 document.addEventListener('click', function (e) {
@@ -634,22 +657,108 @@ document.addEventListener('submit', function (e) {
 
 renderAll();
 
-/* ---------- optional account sync (signed-in claude.ai viewers) ---------- */
-if (window.claude && typeof window.claude.use === 'function') {
+/* ---------- accounts ---------- */
+var EMPTY = function () { return { lang: L, watched: {}, mastered: {}, plans: [], tests: {}, updatedAt: 0 }; };
+function hasContent(st) { return Object.keys(st.watched || {}).length || Object.keys(st.mastered || {}).length || (st.plans || []).length || Object.keys(st.tests || {}).length; }
+function adopt(remote) {
+  state = Object.assign(EMPTY(), remote);
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  if (!hashLang && state.lang) L = state.lang;
+  renderAll();
+}
+var acct = { mode: null, user: null, msg: '', err: '', needEmail: false, delPending: false };
+var FB = window.HOOV_FIREBASE && window.firebase && typeof window.firebase.initializeApp === 'function';
+
+function renderAccount() {
+  var box = $('account'), btn = $('acctbtn');
+  if (!acct || acct.mode !== 'firebase') { box.hidden = true; btn.hidden = true; return; }
+  box.hidden = false; btn.hidden = false;
+  var u = acct.user;
+  btn.className = 'acctbtn' + (u ? ' in' : '');
+  btn.textContent = u ? tr(T.acctNav) : tr(T.signIn);
+  var gIcon = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  var priv = '<p class="small">' + esc(tr(T.privacyShort)) + ' <a href="privaatsus.html' + (L === 'ru' ? '#ru' : '') + '">' + esc(tr(T.privacy)) + '</a></p>';
+  var msg = (acct.msg ? '<p class="msg">' + esc(acct.msg) + '</p>' : '') + (acct.err ? '<p class="err">' + esc(acct.err) + '</p>' : '');
+  if (u) {
+    box.innerHTML = '<h3>' + esc(tr(T.acctH)) + '</h3><p>' + esc(tr(T.signedAs).replace('{e}', u.email || u.displayName || '')) + '</p>' + msg +
+      '<div class="row"><button type="button" class="btn ghost" id="a-out">' + esc(tr(T.signOut)) + '</button><button type="button" class="del' + (acct.delPending ? ' confirm' : '') + '" id="a-del">' + esc(tr(acct.delPending ? T.delAcctConfirm : T.delAcct)) + '</button></div>' + priv;
+  } else if (acct.needEmail) {
+    box.innerHTML = '<h3>' + esc(tr(T.acctH)) + '</h3>' + msg + '<form class="row" id="a-finish"><label for="a-email2">' + esc(tr(T.confirmEmail)) + '<input type="email" id="a-email2" required autocomplete="email"></label><button type="submit" class="btn">' + esc(tr(T.finish)) + '</button></form>' + priv;
+  } else {
+    box.innerHTML = '<h3>' + esc(tr(T.acctH)) + '</h3><p class="muted">' + esc(tr(T.acctLead)) + '</p>' + msg +
+      '<div class="row"><button type="button" class="btn google" id="a-google">' + gIcon + esc(tr(T.google)) + '</button></div>' +
+      '<form class="row" id="a-mail"><label for="a-email">' + esc(tr(T.emailLbl)) + '<input type="email" id="a-email" required autocomplete="email" placeholder="nimi@näide.ee"></label><button type="submit" class="btn ghost">' + esc(tr(T.sendLink)) + '</button></form>' + priv;
+  }
+}
+
+if (FB) {
+  acct.mode = 'firebase';
+  var app = firebase.initializeApp(window.HOOV_FIREBASE);
+  var auth = firebase.auth(), fdb = firebase.firestore();
+  auth.languageCode = L;
+  var linkUrl = location.origin + location.pathname;
+  var fail = function (e) { acct.err = tr(T.err); acct.msg = ''; if (window.console) console.error(e); renderAccount(); };
+
+  if (auth.isSignInWithEmailLink(location.href)) {
+    var saved = null; try { saved = localStorage.getItem('hoov:email'); } catch (e) {}
+    var finish = function (email) {
+      auth.signInWithEmailLink(email, location.href).then(function () {
+        try { localStorage.removeItem('hoov:email'); history.replaceState(null, '', linkUrl + '#' + L); } catch (e) {}
+        acct.needEmail = false; acct.err = '';
+      }).catch(fail);
+    };
+    if (saved) finish(saved); else acct.needEmail = true;
+    document.addEventListener('submit', function (e) { if (e.target.id !== 'a-finish') return; e.preventDefault(); finish($('a-email2').value.trim()); });
+  }
+
+  auth.onAuthStateChanged(function (u) {
+    acct.user = u; acct.delPending = false;
+    if (!u) { cloud = null; renderAll(); return; }
+    var ref = fdb.collection('users').doc(u.uid);
+    cloud = { save: function (st) { ref.set({ state: JSON.stringify(st), updatedAt: st.updatedAt }).catch(function (e) { if (window.console) console.error(e); }); } };
+    ref.get().then(function (snap) {
+      var remote = null;
+      if (snap.exists) { try { remote = JSON.parse(snap.data().state); } catch (e) {} }
+      if (remote && (!hasContent(state) || (remote.updatedAt || 0) >= (state.updatedAt || 0))) adopt(remote);
+      else { persist(); renderAll(); }
+    }).catch(fail);
+    renderAll();
+  });
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t) return;
+    if (t.id === 'acctbtn') { $('plaanid').scrollIntoView({ behavior: 'smooth' }); return; }
+    if (t.id === 'a-google') { acct.err = ''; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function (er) { if (er && er.code === 'auth/popup-blocked') auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); else if (!(er && er.code === 'auth/popup-closed-by-user')) fail(er); }); return; }
+    if (t.id === 'a-out') { auth.signOut().then(function () { state = EMPTY(); try { localStorage.removeItem(KEY); } catch (er) {} acct.msg = ''; renderAll(); }); return; }
+    if (t.id === 'a-del') {
+      if (!acct.delPending) { acct.delPending = true; renderAccount(); return; }
+      var u = auth.currentUser; if (!u) return;
+      fdb.collection('users').doc(u.uid).delete().then(function () { return u.delete(); }).then(function () {
+        state = EMPTY(); try { localStorage.removeItem(KEY); } catch (er) {} acct.msg = tr(T.deleted); renderAll();
+      }).catch(function (er) { acct.delPending = false; if (er && er.code === 'auth/requires-recent-login') { acct.err = tr(T.reauth); renderAccount(); } else fail(er); });
+    }
+  });
+  document.addEventListener('submit', function (e) {
+    if (e.target.id !== 'a-mail') return; e.preventDefault();
+    var email = $('a-email').value.trim(); acct.err = '';
+    auth.sendSignInLinkToEmail(email, { url: linkUrl, handleCodeInApp: true }).then(function () {
+      try { localStorage.setItem('hoov:email', email); } catch (er) {}
+      acct.msg = tr(T.linkSent).replace('{e}', email); renderAccount();
+    }).catch(fail);
+  });
+  renderAccount();
+} else if (window.claude && typeof window.claude.use === 'function') {
+  /* claude.ai artifact: signed-in viewers keep progress in their private store */
   Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (r) {
     var db = r[0], user = r[1]; if (!db || !user) return null;
     return user.id().then(function (uid) {
       if (!uid) return null;
       var ref = db.doc('data/users/' + uid + '/hoov');
       return ref.get().then(function (snap) {
-        cloud = ref;
+        cloud = { save: function (st) { ref.set(st).catch(function () {}); } };
         var remote = snap.exists ? snap.data() : null;
-        if (remote && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
-          state = Object.assign({ lang: L, watched: {}, mastered: {}, plans: [], tests: {}, updatedAt: 0 }, remote);
-          try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-          if (!hashLang && state.lang) L = state.lang;
-          renderAll();
-        } else { persist(); renderSync(); }
+        if (remote && (remote.updatedAt || 0) > (state.updatedAt || 0)) adopt(remote);
+        else { persist(); renderSync(); }
       });
     });
   }).catch(function () { cloud = null; renderSync(); });
