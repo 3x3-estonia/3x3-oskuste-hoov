@@ -1,12 +1,22 @@
 # Seadistamine: kontod ja oma aadress
 
-Kolm osa. Igaüks võtab 5–15 minutit. Tee need järjekorras.
+Neli osa. Igaüks võtab 2–15 minutit. Tee need järjekorras.
 
+0. **GitHub Pages sisse** — leht internetti (2 min)
 1. **Firebase** — kasutajakontod ja andmebaas (tasuta)
 2. **Zone.ee** — aadress `hoov.3x3estonia.com`
 3. **GitHub** — aadress lehe külge
 
-Leht töötab juba enne seadistamist aadressil https://3x3-estonia.github.io/3x3-oskuste-hoov/ — ainult ilma kontodeta (edenemine jääb brauserisse).
+---
+
+## 0. GitHub Pages sisse
+
+1. Ava https://github.com/3x3-estonia/3x3-oskuste-hoov/settings/pages
+2. **Build and deployment → Source:** vali **Deploy from a branch**.
+3. **Branch:** vali **main** ja kaust **/docs**. Vajuta **Save**.
+4. Oota 1–2 minutit ja värskenda lehte. Üles ilmub: *„Your site is live at https://3x3-estonia.github.io/3x3-oskuste-hoov/"*.
+
+Leht töötab nüüd, aga veel ilma kontodeta (edenemine jääb brauserisse). Kontod tulevad 1. osaga.
 
 ---
 
